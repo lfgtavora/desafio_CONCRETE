@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.example.lipe.desafio.MVP.MVP;
+import com.example.lipe.desafio.MVP.RepositoriesPresenter;
 import com.example.lipe.desafio.adapters.AdapterRepositories;
 import com.example.lipe.desafio.api.GithubService;
 import com.example.lipe.desafio.helpers.EndlessRecyclerViewScrollListener;
@@ -23,55 +25,52 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MVP.View {
 
-    private Retrofit retrofit;
     private List<Repository> items;
     private Results results;
     private RecyclerView recyclerRepositories;
+    private LinearLayoutManager layoutManager;
     private AdapterRepositories adapterRepositories;
-    private EndlessRecyclerViewScrollListener scrollListener;
+    private RepositoriesPresenter repositoriesPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        items = new ArrayList<>();
+        repositoriesPresenter = new RepositoriesPresenter();
+        repositoriesPresenter.setView(this);
 
+        items = new ArrayList<>();
         recyclerRepositories = findViewById(R.id.recyclerRepositories);
 
-        //recycler view config
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerRepositories.setLayoutManager(layoutManager);
-        recyclerRepositories.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
-        recyclerRepositories.setHasFixedSize(true);
-        adapterRepositories = new AdapterRepositories(getApplicationContext(), items);
-        recyclerRepositories.setAdapter(adapterRepositories);
-
+        setRepositoriesView();
+        setScrollListener();
         getRepositories(1);
-
-        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView recyclerView) {
-                Log.i("page", String.valueOf(page));
-                loadNextDataFromApi(page);
-            }
-        };
 
         recyclerRepositories.addOnScrollListener(scrollListener);
 
     }
+
+
+    public void setScrollListener() { }
 
     public void loadNextDataFromApi(int page) {
 
         getRepositories(page);
     }
 
-    private void repositoriesView() {
-
-
+    private void setRepositoriesView() {
+        //recycler view config
+        layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerRepositories.setLayoutManager(layoutManager);
+        recyclerRepositories.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
+        recyclerRepositories.setHasFixedSize(true);
+        adapterRepositories = new AdapterRepositories(getApplicationContext(), items);
+        recyclerRepositories.setAdapter(adapterRepositories);
     }
+
     private void getRepositories(int page) {
 
         //retofit config
@@ -84,10 +83,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Results> call, Response<Results> response) {
 
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     results = response.body();
 
-                    for(int i = 0; i < results.items.size(); i++)
+                    for (int i = 0; i < results.items.size(); i++)
                         items.add(results.items.get(i));
 
                     adapterRepositories.setRepositories(items);
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Results> call, Throwable t) {
-                Log.d("TAG","Response = "+t.toString());
+                Log.d("TAG", "Response = " + t.toString());
             }
         });
     }

@@ -9,8 +9,8 @@ public class RetrofitConfig {
 
     public static Retrofit getRetrofitConfig() {
         return new Retrofit.Builder()
-                        .baseUrl(GithubService.BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
+                .baseUrl(GithubService.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
     }
 }

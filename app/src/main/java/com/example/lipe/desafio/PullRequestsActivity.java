@@ -38,7 +38,7 @@ public class PullRequestsActivity extends AppCompatActivity {
         items = new ArrayList<>();
 
         //get intent
-        if (getIntent().hasExtra("name") && getIntent().hasExtra("login")){
+        if (getIntent().hasExtra("name") && getIntent().hasExtra("login")) {
             name = getIntent().getStringExtra("name");
             login = getIntent().getStringExtra("login");
 
@@ -65,7 +65,7 @@ public class PullRequestsActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<PullRequest>>() {
             @Override
             public void onResponse(Call<List<PullRequest>> call, Response<List<PullRequest>> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     items = response.body();
                     adapterPulls.setPulls(items);
                 }
@@ -73,7 +73,7 @@ public class PullRequestsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<PullRequest>> call, Throwable t) {
-                Log.d("TAG","Response = "+t.toString());
+                Log.d("TAG", "Response = " + t.toString());
             }
         });
 
