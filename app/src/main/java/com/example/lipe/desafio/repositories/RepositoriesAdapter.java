@@ -1,4 +1,4 @@
-package com.example.lipe.desafio.adapters;
+package com.example.lipe.desafio.repositories;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.lipe.desafio.PullRequestsActivity;
 import com.example.lipe.desafio.R;
@@ -18,18 +17,21 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class AdapterRepositories extends RecyclerView.Adapter<AdapterRepositories.MyViewHolder> {
+public class RepositoriesAdapter extends RecyclerView.Adapter<RepositoriesAdapter.MyViewHolder> {
 
     private List<Repository> items;
     private Context context;
+    private RepositoriesContract.View view;
 
-    public AdapterRepositories(Context context, List<Repository> repositories) {
+    public RepositoriesAdapter(Context context, List<Repository> repositories, RepositoriesContract.View view ) {
         this.items = repositories;
         this.context = context;
+        this.view = view;
     }
 
-    public void setRepositories(List<Repository> repositories) {
-        this.items = repositories;
+
+    void setRepositories(List<Repository> repositories) {
+        this.items.addAll(repositories);
         notifyDataSetChanged();
     }
 
@@ -39,37 +41,13 @@ public class AdapterRepositories extends RecyclerView.Adapter<AdapterRepositorie
         View itemList = LayoutInflater
                 .from(context)
                 .inflate(R.layout.item_repository_layout, viewGroup, false);
-        final int itemViewType = getItemViewType(i);
         return new MyViewHolder(itemList);
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, int i) {
-
-        Repository item = items.get(i);
-        myViewHolder.name.setText(item.getName());
-        myViewHolder.description.setText(item.getDescription());
-        myViewHolder.login.setText(item.getOwner().login);
-        myViewHolder.forks_count.setText(item.getForks_count());
-        myViewHolder.stargazers_count.setText(item.getStargazers_count());
-        //myViewHolder.avatar_url.setImageResource(R.drawable.ic_launcher_background);
-        Picasso.get().load(item.getOwner().avatar_url).into(myViewHolder.avatar_url);
-
-        //create intent
-
-        final Intent intent = new Intent(context, PullRequestsActivity.class);
-        intent.putExtra("name", item.getName());
-        intent.putExtra("login", item.getOwner().login);
-
-        myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(intent);
-            }
-        });
-
-
+    public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, int position) {
+        myViewHolder.bind(items.get(position));
     }
 
     @Override
@@ -77,7 +55,7 @@ public class AdapterRepositories extends RecyclerView.Adapter<AdapterRepositorie
         return items.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView name;
         TextView description;
@@ -88,7 +66,7 @@ public class AdapterRepositories extends RecyclerView.Adapter<AdapterRepositorie
         ImageView fork_icon;
         ImageView star_icon;
 
-        public MyViewHolder(@NonNull View itemView) {
+        MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.name);
@@ -99,6 +77,24 @@ public class AdapterRepositories extends RecyclerView.Adapter<AdapterRepositorie
             avatar_url = itemView.findViewById(R.id.avatar_url);
             fork_icon = itemView.findViewById(R.id.fork_icon);
             star_icon = itemView.findViewById(R.id.star_icon);
+
+        }
+
+        void bind(final Repository repository){
+            name.setText(repository.getName());
+            description.setText(repository.getDescription());
+            login.setText(repository.getOwner().login);
+            forks_count.setText(repository.getForks_count());
+            stargazers_count.setText(repository.getStargazers_count());
+            Picasso.get().load(repository.getOwner().avatar_url).into(avatar_url);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    view.onRepositoryClikedListener(repository);
+                }
+            });
+
 
         }
     }
