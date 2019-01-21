@@ -1,4 +1,4 @@
-package com.example.lipe.desafio.adapters;
+package com.example.lipe.desafio.pullRequests;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,14 +20,16 @@ import java.util.List;
 public class AdapterPulls extends RecyclerView.Adapter<AdapterPulls.myViewHolder> {
     List<PullRequest> items;
     Context context;
+    PullsContract.View view;
 
-    public AdapterPulls(Context context, List<PullRequest> items) {
+    public AdapterPulls(Context context, List<PullRequest> items, PullsContract.View view) {
         this.items = items;
         this.context = context;
+        this.view = view;
     }
 
     public void setPulls(List<PullRequest> pulls) {
-        this.items = pulls;
+        this.items.addAll(pulls);
         notifyDataSetChanged();
     }
 

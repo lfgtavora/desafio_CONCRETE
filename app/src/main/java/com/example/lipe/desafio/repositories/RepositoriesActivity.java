@@ -8,10 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.example.lipe.desafio.PullRequestsActivity;
+import com.example.lipe.desafio.pullRequests.PullRequestsActivity;
 import com.example.lipe.desafio.R;
 import com.example.lipe.desafio.helpers.EndlessRecyclerViewScrollListener;
-import com.example.lipe.desafio.models.RepositoriesListResponse;
 import com.example.lipe.desafio.models.Repository;
 
 import java.util.ArrayList;
