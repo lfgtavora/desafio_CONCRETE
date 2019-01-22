@@ -1,5 +1,7 @@
 package com.example.lipe.desafio.pullRequests;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -19,7 +21,7 @@ public class PullRequestsActivity extends AppCompatActivity implements PullsCont
     private RecyclerView recyclerPulls;
     private List<PullRequest> items;
     private AdapterPulls adapterPulls;
-    private PullsContract.Presenter presenter;
+    private PullsPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,11 @@ public class PullRequestsActivity extends AppCompatActivity implements PullsCont
 
     public void setActionBarName(){
         getSupportActionBar().setTitle(getIntent().getStringExtra("name"));
+    }
+
+    public void openOnBrowser(String url){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(browserIntent);
     }
 
 

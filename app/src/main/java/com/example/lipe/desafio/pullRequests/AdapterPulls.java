@@ -43,20 +43,7 @@ public class AdapterPulls extends RecyclerView.Adapter<AdapterPulls.myViewHolder
     @Override
     public void onBindViewHolder(@NonNull final myViewHolder myViewHolder, int i) {
 
-        final PullRequest pull = items.get(i);
-
-        myViewHolder.title.setText(pull.getTitle());
-        myViewHolder.body.setText(pull.getBody());
-        myViewHolder.login.setText(pull.getUser().login);
-        Picasso.get().load(pull.getUser().avatar_url).into(myViewHolder.avatar_url);
-
-        myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pull.getHtml_url()));
-                context.startActivity(browserIntent);
-            }
-        });
+        myViewHolder.bind(items.get(i));
 
     }
 
@@ -78,6 +65,20 @@ public class AdapterPulls extends RecyclerView.Adapter<AdapterPulls.myViewHolder
             body = itemView.findViewById(R.id.body);
             login = itemView.findViewById(R.id.login);
             avatar_url = itemView.findViewById(R.id.avatar_url);
+        }
+
+        public void bind(final PullRequest pull) {
+            title.setText(pull.getTitle());
+            body.setText(pull.getBody());
+            login.setText(pull.getUser().login);
+            Picasso.get().load(pull.getUser().avatar_url).into(avatar_url);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    view.openOnBrowser(pull.getHtml_url());
+                }
+            });
         }
     }
 }

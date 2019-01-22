@@ -11,6 +11,7 @@ public interface PullsContract {
         void setupList();
         String[] getIntentData();
         void displayList(List<PullRequest> items);
+        void openOnBrowser(String url);
     }
 
     interface Presenter{
